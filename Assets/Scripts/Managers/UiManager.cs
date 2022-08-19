@@ -19,42 +19,27 @@ public class UiManager : MonoBehaviour
     }
     #endregion
     #region Panels
-    [SerializeField] private GameObject _startPanel;
-    [SerializeField] private GameObject _winPanel;
-    [SerializeField] private GameObject _losePanel;
-    [SerializeField] private GameObject _hudPanel;
+    [SerializeField] private GameObject _mainPanel;
     #endregion
 
     private void Awake()
     {
         InitSingleton();
     }
-    public void StartGame()
+    public void NewGame()
     {
-        _startPanel.SetActive(false);
-        _hudPanel.SetActive(true);
+        _mainPanel.SetActive(false);       
     }
-    public void NextGame()
+    public void Continue()
     {
-        _winPanel.SetActive(false);
-        _hudPanel.SetActive(true);
+        _mainPanel.SetActive(false);
     }
-    public void RestartGame()
+    public void Options()
     {
-        _losePanel.SetActive(false);
-        _hudPanel.SetActive(true);
+       
     }
-    public void OnGameEnd(bool isWin)
+    public void Quit()
     {
-        _hudPanel.SetActive(false);
 
-        if (isWin)
-        {
-            _winPanel.SetActive(true);
-        }
-        else
-        {
-            _losePanel.SetActive(true);
-        }
     }
 }

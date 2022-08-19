@@ -25,26 +25,25 @@ public class GameManager : MonoBehaviour
     }
     public bool gameStarted;
 
-    public void StartGame()
+    public void NewGame()
     {
         gameStarted = true;
-        UiManager.instance.StartGame();
+        UiManager.instance.NewGame();
     }
-    public void NextGame()
+    public void Continue()
     {
         gameStarted = true;
-        Player.instance.ResetPlayer();
-        UiManager.instance.NextGame();
+        //Player.instance.ResetPlayer();
+        UiManager.instance.Continue();
     }
-    public void RestartGame()
+    public void Options()
     {
         gameStarted = true;
-        Player.instance.ResetPlayer();
-        UiManager.instance.RestartGame();
+        UiManager.instance.Options();
     }
-    public void OnGameEnd(bool isWin)
+
+    public void Quit()
     {
-        gameStarted = false;
-        UiManager.instance.OnGameEnd(isWin);
+        UiManager.instance.Quit();
     }
 }
