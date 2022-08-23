@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    #region Variable    
+
+    #endregion
+    [SerializeField] float _move = 1f;
+    private Vector3 moveDirection = Vector3.zero;
     #region Instance
+
     public static Player instance;
     void InitSingleton()
     {
@@ -24,19 +30,31 @@ public class Player : MonoBehaviour
         InitSingleton();
     }
 
-    private void Movement()
+    private void Start()
     {
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position = transform.position + new Vector3(100 * Time.deltaTime, 0, 0);
-        }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position = transform.position - new Vector3(100 * Time.deltaTime, 0, 0);
-        }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            transform.position += Vector3.left * _move;
+        }
 
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            transform.position += Vector3.right * _move;
+        }
+
+        if (Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            transform.position += Vector3.forward * _move;
+        }
+
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            transform.position += Vector3.back * _move;
+        }
+    }
 }
-
