@@ -5,10 +5,16 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region Variable    
+    //[SerializeField] private float _desiredDuration = 3f;
+    //[SerializeField] private Vector3 _startPosition;
+    //[SerializeField] private Vector3 _endPosition = new Vector3(5, -2, 0);
+    //[SerializeField] private float elapsedTime;
+    [SerializeField] private float _move = 1f;
+    [SerializeField] private RaycastHit _nesne;
+    [SerializeField] private float _range = 5f;
 
     #endregion
-    [SerializeField] float _move = 1f;
-    private Vector3 moveDirection = Vector3.zero;
+
     #region Instance
 
     public static Player instance;
@@ -32,11 +38,31 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-
+        //_startPosition = transform.position;
     }
 
     private void Update()
     {
+        Movement();
+        //elapsedTime += _move;
+        //float percentageComplete = elapsedTime / _desiredDuration;
+        //transform.position = Vector3.Lerp(_startPosition, _endPosition, Mathf.SmoothStep(0,1, percentageComplete));
+    }
+
+    private void Movement()
+    {
+        Vector3 direction = Vector3.forward;
+        Ray theRay = new Ray(transform.position, transform.TransformDirection(direction * _range));
+        Debug.DrawRay(transform.position, transform.TransformDirection(direction * _range));
+
+        if (Physics.Raycast(theRay, out RaycastHit hit, _range))
+        {
+            if (hit.collider.tag == "Obstacle")
+            {
+                Debug.Log("it's Kirmizi");
+            }
+        }
+
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             transform.position += Vector3.left * _move;
