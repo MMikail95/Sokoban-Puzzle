@@ -10,8 +10,8 @@ public class Player : MonoBehaviour
     //[SerializeField] private Vector3 _endPosition = new Vector3(5, -2, 0);
     //[SerializeField] private float elapsedTime;
     [SerializeField] private float _move = 1f;
-    [SerializeField] private RaycastHit _nesne;
-    [SerializeField] private float _range = 5f;
+    [SerializeField] private RaycastHit _nesne; 
+    public bool isWall;
 
     #endregion
 
@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Movement();
+        
         //elapsedTime += _move;
         //float percentageComplete = elapsedTime / _desiredDuration;
         //transform.position = Vector3.Lerp(_startPosition, _endPosition, Mathf.SmoothStep(0,1, percentageComplete));
@@ -51,36 +52,46 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
-        Vector3 direction = Vector3.forward;
-        Ray theRay = new Ray(transform.position, transform.TransformDirection(direction * _range));
-        Debug.DrawRay(transform.position, transform.TransformDirection(direction * _range));
-
-        if (Physics.Raycast(theRay, out RaycastHit hit, _range))
+        if (isWall == false)
         {
-            if (hit.collider.tag == "Obstacle")
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
             {
-                Debug.Log("it's Kirmizi");
+                transform.position += Vector3.left * _move;
+                Direction();
             }
-        }
 
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            transform.position += Vector3.left * _move;
-        }
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                transform.position += Vector3.right * _move;
+                Direction();
+            }
 
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            transform.position += Vector3.right * _move;
-        }
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                transform.position += Vector3.forward * _move;
+                Direction();
+            }
 
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            transform.position += Vector3.forward * _move;
-        }
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                transform.position += Vector3.back * _move;
+                Direction();
+            }
 
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            transform.position += Vector3.back * _move;
         }
+       
+    }
+
+    private void Direction()
+    {
+        Vector3 playerPosition = transform.position;
+        Vector3 fowardDirection = transform.forward;
+        Ray theRay = new Ray(playerPosition, fowardDirection);
+
+        if (Physics.Raycast(theRay, out RaycastHit hit, 1f))
+        {
+            isWall = true;
+        }
+        
     }
 }
