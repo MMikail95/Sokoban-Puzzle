@@ -5,12 +5,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region Variable    
-    //[SerializeField] private float _desiredDuration = 3f;
-    //[SerializeField] private Vector3 _startPosition;
-    //[SerializeField] private Vector3 _endPosition = new Vector3(5, -2, 0);
-    //[SerializeField] private float elapsedTime;
     [SerializeField] private float _move = 1f;
     [SerializeField] private RaycastHit _nesne;
+    [SerializeField] private Transform _target;
+    [SerializeField] private Vector3 velocity = Vector3.zero;
     public bool isBackEmpty;
     public bool isLeftEmpty;
     public bool isFrontEmpty;
@@ -45,47 +43,51 @@ public class Player : MonoBehaviour
         isFrontEmpty = true;
         isLeftEmpty = true;
         isRightEmpty = true;
-        //_startPosition = transform.position;
     }
 
     private void Update()
     {
         Movement();
-
-        //elapsedTime += _move;
-        //float percentageComplete = elapsedTime / _desiredDuration;
-        //transform.position = Vector3.Lerp(_startPosition, _endPosition, Mathf.SmoothStep(0,1, percentageComplete));
+        Lerp();
     }
 
     private void Movement()
     {
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        if (isLeftEmpty == true)
         {
-            transform.position += Vector3.left * _move;
-            DirectionLeft();
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                transform.position += Vector3.left * _move;
+            }
         }
+        DirectionLeft();
 
-
-
-        if (Input.GetKeyUp(KeyCode.RightArrow))
+        if (isRightEmpty == true)
         {
-            transform.position += Vector3.right * _move;
-            DirectionRight();
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                transform.position += Vector3.right * _move;
+            }
         }
+        DirectionRight();
 
-        if (Input.GetKeyUp(KeyCode.UpArrow))
+        if (isFrontEmpty == true)
         {
-            transform.position += Vector3.forward * _move;
-            DirectionFoward();
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                transform.position += Vector3.Lerp(transform.position, transform.forward, _move);
+            }
         }
+        DirectionFoward();
 
-        if (Input.GetKeyUp(KeyCode.DownArrow))
+        if (isBackEmpty == true)
         {
-            transform.position += Vector3.back * _move;
-            DirectionBack();
-
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                transform.position += Vector3.back * _move;
+            }
         }
+        DirectionBack();
     }
 
     private void DirectionFoward()
@@ -98,11 +100,15 @@ public class Player : MonoBehaviour
         {
             if (_nesne.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Anam Duvar");
+                Debug.Log("Ön Duvar");
                 isFrontEmpty = false;
             }
         }
 
+        else
+        {
+            isFrontEmpty = true;
+        }
     }
 
     private void DirectionBack()
@@ -115,9 +121,14 @@ public class Player : MonoBehaviour
         {
             if (_nesne.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Anam Duvar");
+                Debug.Log("Arka Duvar");
                 isBackEmpty = false;
             }
+        }
+
+        else
+        {
+            isBackEmpty = true;
         }
     }
 
@@ -131,9 +142,13 @@ public class Player : MonoBehaviour
         {
             if (_nesne.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Anam Duvar");
+                Debug.Log("Sað Duvar");
                 isRightEmpty = false;
             }
+        }
+        else
+        {
+            isRightEmpty = true;
         }
     }
 
@@ -147,9 +162,18 @@ public class Player : MonoBehaviour
         {
             if (_nesne.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Anam Duvar");
+                Debug.Log("Sol Duvar");
                 isLeftEmpty = false;
             }
         }
+        else
+        {
+            isLeftEmpty = true;
+        }
+    }
+
+    private void Lerp ()
+    {
+        transform.position = Vector3.Lerp(transform.position, transform.forward, Time.deltaTime);
     }
 }

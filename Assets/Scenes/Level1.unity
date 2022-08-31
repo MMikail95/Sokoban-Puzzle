@@ -184,6 +184,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6328875516732472648, guid: 01f179faed4ba6142bd9eb3e1e2b9877, type: 3}
+      propertyPath: velocity.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328875516732472648, guid: 01f179faed4ba6142bd9eb3e1e2b9877, type: 3}
+      propertyPath: velocity.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328875516732472648, guid: 01f179faed4ba6142bd9eb3e1e2b9877, type: 3}
+      propertyPath: velocity.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328875516732472648, guid: 01f179faed4ba6142bd9eb3e1e2b9877, type: 3}
       propertyPath: endTransform
       value: 
       objectReference: {fileID: 455740715}
