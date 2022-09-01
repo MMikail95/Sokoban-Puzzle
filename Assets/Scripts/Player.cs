@@ -6,7 +6,6 @@ public class Player : MonoBehaviour
 {
     #region Variable    
     [SerializeField] private float _move = 1f;
-    [SerializeField] private RaycastHit _nesne;
     [SerializeField] private Transform _target;
     [SerializeField] private Vector3 velocity = Vector3.zero;
     public bool isBackEmpty;
@@ -39,68 +38,55 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        isBackEmpty = true;
-        isFrontEmpty = true;
-        isLeftEmpty = true;
-        isRightEmpty = true;
+        CheckAround(transform.position);
     }
 
     private void Update()
     {
         Movement();
-        Lerp();
     }
 
     private void Movement()
     {
-        if (isLeftEmpty == true)
+        if (isLeftEmpty && Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            if (Input.GetKeyUp(KeyCode.LeftArrow))
-            {
-                transform.position += Vector3.left * _move;
-            }
+            Vector3 targetPos = transform.position + Vector3.left * _move;
+            CheckAround(targetPos);
+            transform.position = targetPos;
         }
-        DirectionLeft();
 
-        if (isRightEmpty == true)
+        if (isRightEmpty && Input.GetKeyUp(KeyCode.RightArrow))
         {
-            if (Input.GetKeyUp(KeyCode.RightArrow))
-            {
-                transform.position += Vector3.right * _move;
-            }
+            Vector3 targetPos = transform.position + Vector3.right * _move;
+            CheckAround(targetPos);
+            transform.position = targetPos;
         }
-        DirectionRight();
 
-        if (isFrontEmpty == true)
+        if (isFrontEmpty && Input.GetKeyUp(KeyCode.UpArrow))
         {
-            if (Input.GetKeyUp(KeyCode.UpArrow))
-            {
-                transform.position += Vector3.Lerp(transform.position, transform.forward, _move);
-            }
+            Vector3 targetPos = transform.position + Vector3.forward * _move;
+            CheckAround(targetPos);
+            transform.position = targetPos;
         }
-        DirectionFoward();
 
-        if (isBackEmpty == true)
+        if (isBackEmpty && Input.GetKeyUp(KeyCode.DownArrow))
         {
-            if (Input.GetKeyUp(KeyCode.DownArrow))
-            {
-                transform.position += Vector3.back * _move;
-            }
+            Vector3 targetPos = transform.position + Vector3.back * _move;
+            CheckAround(targetPos);
+            transform.position = targetPos;
         }
-        DirectionBack();
     }
 
     private void DirectionFoward()
     {
         Vector3 playerPosition = transform.position;
-        Vector3 fowardDirection = transform.forward;
+        Vector3 fowardDirection = Vector3.forward;
         Ray theRay = new Ray(playerPosition, fowardDirection);
-
-        if (Physics.Raycast(theRay, out _nesne, 3f))
+        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
         {
-            if (_nesne.collider.gameObject.tag == "Wall")
+            Debug.Log(rayHit.collider.name);
+            if (rayHit.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Ön Duvar");
                 isFrontEmpty = false;
             }
         }
@@ -114,14 +100,13 @@ public class Player : MonoBehaviour
     private void DirectionBack()
     {
         Vector3 playerPosition = transform.position;
-        Vector3 backwardDirection = -transform.forward;
+        Vector3 backwardDirection = Vector3.back;
         Ray theRay = new Ray(playerPosition, backwardDirection);
 
-        if (Physics.Raycast(theRay, out _nesne, 3f))
+        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
         {
-            if (_nesne.collider.gameObject.tag == "Wall")
+            if (rayHit.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Arka Duvar");
                 isBackEmpty = false;
             }
         }
@@ -135,14 +120,13 @@ public class Player : MonoBehaviour
     private void DirectionRight()
     {
         Vector3 playerPosition = transform.position;
-        Vector3 rightDirection = transform.right;
+        Vector3 rightDirection = Vector3.right;
         Ray theRay = new Ray(playerPosition, rightDirection);
 
-        if (Physics.Raycast(theRay, out _nesne, 3f))
+        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
         {
-            if (_nesne.collider.gameObject.tag == "Wall")
+            if (rayHit.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Sað Duvar");
                 isRightEmpty = false;
             }
         }
@@ -155,14 +139,13 @@ public class Player : MonoBehaviour
     private void DirectionLeft()
     {
         Vector3 playerPosition = transform.position;
-        Vector3 leftDirection = -transform.right;
+        Vector3 leftDirection = Vector3.left;
         Ray theRay = new Ray(playerPosition, leftDirection);
 
-        if (Physics.Raycast(theRay, out _nesne, 3f))
+        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
         {
-            if (_nesne.collider.gameObject.tag == "Wall")
+            if (rayHit.collider.gameObject.tag == "Wall")
             {
-                Debug.Log("Sol Duvar");
                 isLeftEmpty = false;
             }
         }
@@ -172,8 +155,38 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Lerp ()
+
+    private void CheckAround(Vector3 pos)
     {
-        transform.position = Vector3.Lerp(transform.position, transform.forward, Time.deltaTime);
+        CheckBack(pos);
+        CheckRight(pos);
+        CheckLeft(pos);    
+        CheckForward(pos);  
     }
+    private bool CheckDirection(Vector3 center, Vector3 direction)
+    {
+        return Physics.Raycast(center, direction, 1f);
+    }
+
+
+
+    private void CheckLeft(Vector3 pos)
+    {
+        isLeftEmpty = !CheckDirection(pos,Vector3.left);
+    }    
+    private void CheckRight(Vector3 pos)
+    {
+        isRightEmpty = !CheckDirection(pos, Vector3.right);
+    }
+    
+    private void CheckBack(Vector3 pos)
+    {
+        isBackEmpty = !CheckDirection(pos, Vector3.back);
+    }
+
+    private void CheckForward(Vector3 pos)
+    {
+        isFrontEmpty = !CheckDirection(pos, Vector3.forward);
+    }
+
 }
