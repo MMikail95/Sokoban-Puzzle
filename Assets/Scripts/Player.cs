@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     #region Variable    
     [SerializeField] private float _move = 1f;
-    [SerializeField] private Transform _target;
     public bool isBackEmpty;
     public bool isLeftEmpty;
     public bool isFrontEmpty;
@@ -44,8 +44,11 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        
         CheckAround(transform.position);
+        isBackEmpty = true;
+        isFrontEmpty = true;
+        isRightEmpty = true;
+        isLeftEmpty = true;
     }
 
     private void Update()
@@ -66,7 +69,6 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.left * _move;
             CheckAround(targetPos);
-            // transform.position = targetPos;
             SetMove(targetPos);
         }
 
@@ -92,83 +94,83 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void DirectionFoward()
-    {
-        Vector3 playerPosition = transform.position;
-        Vector3 fowardDirection = Vector3.forward;
-        Ray theRay = new Ray(playerPosition, fowardDirection);
-        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-        {
-            Debug.Log(rayHit.collider.name);
-            if (rayHit.collider.gameObject.tag == "Wall")
-            {
-                isFrontEmpty = false;
-            }
-        }
+    //private void DirectionFoward()
+    //{
+    //    Vector3 playerPosition = transform.position;
+    //    Vector3 fowardDirection = Vector3.forward;
+    //    Ray theRay = new Ray(playerPosition, fowardDirection);
+    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
+    //    {
+    //        Debug.Log(rayHit.collider.name);
+    //        if (rayHit.collider.gameObject.tag == "Wall")
+    //        {
+    //            isFrontEmpty = false;
+    //        }
+    //    }
 
-        else
-        {
-            isFrontEmpty = true;
-        }
-    }
+    //    else
+    //    {
+    //        isFrontEmpty = true;
+    //    }
+    //}
 
-    private void DirectionBack()
-    {
-        Vector3 playerPosition = transform.position;
-        Vector3 backwardDirection = Vector3.back;
-        Ray theRay = new Ray(playerPosition, backwardDirection);
+    //private void DirectionBack()
+    //{
+    //    Vector3 playerPosition = transform.position;
+    //    Vector3 backwardDirection = Vector3.back;
+    //    Ray theRay = new Ray(playerPosition, backwardDirection);
 
-        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-        {
-            if (rayHit.collider.gameObject.tag == "Wall")
-            {
-                isBackEmpty = false;
-            }
-        }
+    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
+    //    {
+    //        if (rayHit.collider.gameObject.tag == "Wall")
+    //        {
+    //            isBackEmpty = false;
+    //        }
+    //    }
 
-        else
-        {
-            isBackEmpty = true;
-        }
-    }
+    //    else
+    //    {
+    //        isBackEmpty = true;
+    //    }
+    //}
 
-    private void DirectionRight()
-    {
-        Vector3 playerPosition = transform.position;
-        Vector3 rightDirection = Vector3.right;
-        Ray theRay = new Ray(playerPosition, rightDirection);
+    //private void DirectionRight()
+    //{
+    //    Vector3 playerPosition = transform.position;
+    //    Vector3 rightDirection = Vector3.right;
+    //    Ray theRay = new Ray(playerPosition, rightDirection);
 
-        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-        {
-            if (rayHit.collider.gameObject.tag == "Wall")
-            {
-                isRightEmpty = false;
-            }
-        }
-        else
-        {
-            isRightEmpty = true;
-        }
-    }
+    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
+    //    {
+    //        if (rayHit.collider.gameObject.tag == "Wall")
+    //        {
+    //            isRightEmpty = false;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        isRightEmpty = true;
+    //    }
+    //}
 
-    private void DirectionLeft()
-    {
-        Vector3 playerPosition = transform.position;
-        Vector3 leftDirection = Vector3.left;
-        Ray theRay = new Ray(playerPosition, leftDirection);
+    //private void DirectionLeft()
+    //{
+    //    Vector3 playerPosition = transform.position;
+    //    Vector3 leftDirection = Vector3.left;
+    //    Ray theRay = new Ray(playerPosition, leftDirection);
 
-        if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-        {
-            if (rayHit.collider.gameObject.tag == "Wall")
-            {
-                isLeftEmpty = false;
-            }
-        }
-        else
-        {
-            isLeftEmpty = true;
-        }
-    }
+    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
+    //    {
+    //        if (rayHit.collider.gameObject.tag == "Wall")
+    //        {
+    //            isLeftEmpty = false;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        isLeftEmpty = true;
+    //    }
+    //}
 
 
     private void CheckAround(Vector3 pos)
@@ -178,30 +180,54 @@ public class Player : MonoBehaviour
         CheckLeft(pos);
         CheckForward(pos);
     }
-    private bool CheckDirection(Vector3 center, Vector3 direction)
+    //private bool CheckDirection(Vector3 center, Vector3 direction)
+    //{
+    //    if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 2f) && raycastHit.collider.CompareTag("Wall"))
+    //    {
+    //        return true;
+    //    }
+    //    if (Physics.Raycast(center, direction, 1f) && raycastHit.collider.CompareTag("Push"))
+    //    {
+    //        return false;
+    //    }
+    //}
+
+    private void CheckType(Vector3 center, Vector3 direction)
     {
-        return Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f) && raycastHit.collider.CompareTag("Wall");
+        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f) && raycastHit.collider.CompareTag("Wall"))
+        {
+            CheckAgain(raycastHit.transform.position, Vector3.left);
+            Debug.Log(raycastHit.collider.tag);
+        }
+    }
+
+    private void CheckAgain(Vector3 secondCenter, Vector3 secondDirection)
+    {
+        if (Physics.Raycast(secondCenter, secondDirection, out RaycastHit raycastHit, 1f) && raycastHit.collider.CompareTag("Push"))
+        {
+            isLeftEmpty = true;
+        }
     }
 
 
 
     private void CheckLeft(Vector3 pos)
     {
-        isLeftEmpty = !CheckDirection(pos, Vector3.left);
+        CheckType(pos, Vector3.left);
     }
     private void CheckRight(Vector3 pos)
     {
-        isRightEmpty = !CheckDirection(pos, Vector3.right);
+        CheckType(pos, Vector3.right);
     }
 
     private void CheckBack(Vector3 pos)
     {
-        isBackEmpty = !CheckDirection(pos, Vector3.back);
+        CheckType(pos, Vector3.back);
     }
 
     private void CheckForward(Vector3 pos)
     {
-        isFrontEmpty = !CheckDirection(pos, Vector3.forward);
+        CheckType(pos, Vector3.forward);
     }
 
     private void Move()
