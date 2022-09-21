@@ -12,6 +12,13 @@ public class Player : MonoBehaviour
     public bool isLeftEmpty;
     public bool isFrontEmpty;
     public bool isRightEmpty;
+    public bool isCube;
+    public bool isCubeLeftEmpty;
+    public bool isCubeRightEmpty;
+    public bool isCubeFrontEmpty;
+    public bool isCubeBackEmpty;
+
+
     #endregion
     #region MoveVariables
     private bool moveTimer;
@@ -53,7 +60,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (!moveTimer)
+        if (!moveTimer && !isCube)
         {
             Movement();
         }
@@ -192,42 +199,63 @@ public class Player : MonoBehaviour
     //    }
     //}
 
-    private void CheckType(Vector3 center, Vector3 direction)
+    private void CheckFirst(Vector3 center, Vector3 direction)
     {
-        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f) && raycastHit.collider.CompareTag("Wall"))
+        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f))
         {
-            CheckAgain(raycastHit.transform.position, Vector3.left);
-            Debug.Log(raycastHit.collider.tag);
+            if (raycastHit.collider.CompareTag("Push"))
+            {
+                Debug.Log("oldu mu");
+                CheckTwo(raycastHit.collider.transform.position, Vector3.right);
+                Debug.Log(raycastHit.collider.name);
+            }
+            if (raycastHit.collider.CompareTag("Wall"))
+            {
+                Debug.Log("Lan oldu mu");
+                isCube = true;
+                isCubeBackEmpty = false;
+            }
         }
+    }
+    private void CheckTwo(Vector3 cubeCenter, Vector3 cubeDirection)
+    {
+        if (Physics.Raycast(cubeCenter, cubeDirection, out RaycastHit raycastHit, 1f))
+        {
+            Debug.Log("aþama 2");
+            if (raycastHit.collider.CompareTag("Wall"))
+            {
+                isCubeFrontEmpty = false;
+                Debug.Log("aþama 2");
+            }
+            else
+            {
+                isCubeFrontEmpty = true;
+            }
+
+        }
+
     }
 
-    private void CheckAgain(Vector3 secondCenter, Vector3 secondDirection)
-    {
-        if (Physics.Raycast(secondCenter, secondDirection, out RaycastHit raycastHit, 1f) && raycastHit.collider.CompareTag("Push"))
-        {
-            isLeftEmpty = true;
-        }
-    }
 
 
 
     private void CheckLeft(Vector3 pos)
     {
-        CheckType(pos, Vector3.left);
+        CheckFirst(pos, Vector3.left);
     }
     private void CheckRight(Vector3 pos)
     {
-        CheckType(pos, Vector3.right);
+        CheckFirst(pos, Vector3.right);
     }
 
     private void CheckBack(Vector3 pos)
     {
-        CheckType(pos, Vector3.back);
+        CheckFirst(pos, Vector3.back);
     }
 
     private void CheckForward(Vector3 pos)
     {
-        CheckType(pos, Vector3.forward);
+        CheckFirst(pos, Vector3.forward);
     }
 
     private void Move()
