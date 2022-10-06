@@ -52,15 +52,21 @@ public class Player : MonoBehaviour
     private void Start()
     {
         CheckAround(transform.position);
+        CheckCubeSides(transform.position);
         isBackEmpty = true;
         isFrontEmpty = true;
         isRightEmpty = true;
         isLeftEmpty = true;
+        isCube = false;
+        isCubeBackEmpty = true;
+        isCubeFrontEmpty = true;
+        isCubeLeftEmpty = true;
+        isCubeRightEmpty = true;
     }
 
     private void Update()
     {
-        if (!moveTimer && !isCube)
+        if (!moveTimer)
         {
             Movement();
         }
@@ -76,6 +82,7 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.left * _move;
             CheckAround(targetPos);
+            CheckCubeSides(transform.position);
             SetMove(targetPos);
         }
 
@@ -86,7 +93,7 @@ public class Player : MonoBehaviour
             SetMove(targetPos);
         }
 
-        if (isFrontEmpty && Input.GetKeyUp(KeyCode.UpArrow))
+        if (isFrontEmpty && isCubeFrontEmpty && Input.GetKeyUp(KeyCode.UpArrow))
         {
             Vector3 targetPos = transform.position + Vector3.forward * _move;
             CheckAround(targetPos);
@@ -101,148 +108,62 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void DirectionFoward()
-    //{
-    //    Vector3 playerPosition = transform.position;
-    //    Vector3 fowardDirection = Vector3.forward;
-    //    Ray theRay = new Ray(playerPosition, fowardDirection);
-    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-    //    {
-    //        Debug.Log(rayHit.collider.name);
-    //        if (rayHit.collider.gameObject.tag == "Wall")
-    //        {
-    //            isFrontEmpty = false;
-    //        }
-    //    }
-
-    //    else
-    //    {
-    //        isFrontEmpty = true;
-    //    }
-    //}
-
-    //private void DirectionBack()
-    //{
-    //    Vector3 playerPosition = transform.position;
-    //    Vector3 backwardDirection = Vector3.back;
-    //    Ray theRay = new Ray(playerPosition, backwardDirection);
-
-    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-    //    {
-    //        if (rayHit.collider.gameObject.tag == "Wall")
-    //        {
-    //            isBackEmpty = false;
-    //        }
-    //    }
-
-    //    else
-    //    {
-    //        isBackEmpty = true;
-    //    }
-    //}
-
-    //private void DirectionRight()
-    //{
-    //    Vector3 playerPosition = transform.position;
-    //    Vector3 rightDirection = Vector3.right;
-    //    Ray theRay = new Ray(playerPosition, rightDirection);
-
-    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-    //    {
-    //        if (rayHit.collider.gameObject.tag == "Wall")
-    //        {
-    //            isRightEmpty = false;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        isRightEmpty = true;
-    //    }
-    //}
-
-    //private void DirectionLeft()
-    //{
-    //    Vector3 playerPosition = transform.position;
-    //    Vector3 leftDirection = Vector3.left;
-    //    Ray theRay = new Ray(playerPosition, leftDirection);
-
-    //    if (Physics.Raycast(theRay, out RaycastHit rayHit, 3f))
-    //    {
-    //        if (rayHit.collider.gameObject.tag == "Wall")
-    //        {
-    //            isLeftEmpty = false;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        isLeftEmpty = true;
-    //    }
-    //}
-
-
     private void CheckAround(Vector3 pos)
     {
-        CheckBack(pos);
-        CheckRight(pos);
         CheckLeft(pos);
+        CheckRight(pos);
         CheckForward(pos);
+        CheckBack(pos);
     }
-    //private bool CheckDirection(Vector3 center, Vector3 direction)
-    //{
-    //    if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 2f) && raycastHit.collider.CompareTag("Wall"))
-    //    {
-    //        return true;
-    //    }
-    //    if (Physics.Raycast(center, direction, 1f) && raycastHit.collider.CompareTag("Push"))
-    //    {
-    //        return false;
-    //    }
-    //}
+
+    private void CheckCubeSides(Vector3 pos)
+    {
+        CheckCubeLeft(pos);
+        CheckCubeRight(pos);
+        CheckCubeFoward(pos);
+        CheckCubeBack(pos);
+    }
 
     private void CheckFirst(Vector3 center, Vector3 direction)
     {
-        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f))
+        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 2f))
         {
+
             if (raycastHit.collider.CompareTag("Push"))
             {
+                isCube = true;
+                Debug.DrawRay(center, direction, Color.magenta, 5f);
                 Debug.Log("oldu mu");
-                CheckTwo(raycastHit.collider.transform.position, Vector3.right);
-                Debug.Log(raycastHit.collider.name);
+                if (isCube == true)
+                {
+                    CheckTwo(raycastHit.collider.transform.position, direction);
+                }              
             }
-            if (raycastHit.collider.CompareTag("Wall"))
+            else if (raycastHit.collider.CompareTag("Wall"))
             {
                 Debug.Log("Lan oldu mu");
-                isCube = true;
-                isCubeBackEmpty = false;
             }
         }
     }
     private void CheckTwo(Vector3 cubeCenter, Vector3 cubeDirection)
     {
-        if (Physics.Raycast(cubeCenter, cubeDirection, out RaycastHit raycastHit, 1f))
+        if (Physics.Raycast(cubeCenter, cubeDirection, out RaycastHit raycastHit, 2f))
         {
-            Debug.Log("aþama 2");
             if (raycastHit.collider.CompareTag("Wall"))
             {
+                Debug.DrawRay(cubeCenter, cubeDirection, Color.magenta, 5f);
                 isCubeFrontEmpty = false;
-                Debug.Log("aþama 2");
-            }
-            else
-            {
-                isCubeFrontEmpty = true;
-            }
-
+                Debug.Log("aþama 3");
+            }            
         }
 
     }
-
-
-
 
     private void CheckLeft(Vector3 pos)
     {
         CheckFirst(pos, Vector3.left);
     }
+
     private void CheckRight(Vector3 pos)
     {
         CheckFirst(pos, Vector3.right);
@@ -256,6 +177,26 @@ public class Player : MonoBehaviour
     private void CheckForward(Vector3 pos)
     {
         CheckFirst(pos, Vector3.forward);
+    }
+
+    private void CheckCubeLeft(Vector3 pos)
+    {
+        CheckTwo(pos, Vector3.left);
+    }
+
+    private void CheckCubeRight(Vector3 pos)
+    {
+        CheckTwo(pos, Vector3.right);
+    }
+
+    private void CheckCubeFoward(Vector3 pos)
+    {
+        CheckTwo(pos, Vector3.forward);
+    }
+
+    private void CheckCubeBack(Vector3 pos)
+    {
+        CheckTwo(pos, Vector3.back);
     }
 
     private void Move()
