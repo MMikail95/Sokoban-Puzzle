@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.left * _move;
             CheckAround(targetPos);
-            CheckCubeSides(transform.position);
+            CheckCubeSides();
             SetMove(targetPos);
         }
 
@@ -90,6 +90,7 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.right * _move;
             CheckAround(targetPos);
+            CheckCubeSides(transform.position);
             SetMove(targetPos);
         }
 
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.forward * _move;
             CheckAround(targetPos);
+            CheckCubeSides(transform.position);
             SetMove(targetPos);
         }
 
@@ -104,6 +106,7 @@ public class Player : MonoBehaviour
         {
             Vector3 targetPos = transform.position + Vector3.back * _move;
             CheckAround(targetPos);
+            CheckCubeSides(transform.position);
             SetMove(targetPos);
         }
     }
@@ -126,35 +129,44 @@ public class Player : MonoBehaviour
 
     private void CheckFirst(Vector3 center, Vector3 direction)
     {
-        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 2f))
+        if (Physics.Raycast(center, direction, out RaycastHit raycastHit, 1f))
         {
 
             if (raycastHit.collider.CompareTag("Push"))
             {
                 isCube = true;
-                Debug.DrawRay(center, direction, Color.magenta, 5f);
-                Debug.Log("oldu mu");
+                Debug.DrawRay(center, direction, Color.white, 10f);
+                Debug.Log("KÜP VAR");
                 if (isCube == true)
                 {
-                    CheckTwo(raycastHit.collider.transform.position, direction);
+                    CheckTwo(raycastHit.collider.transform.position, direction);                    
                 }              
             }
             else if (raycastHit.collider.CompareTag("Wall"))
             {
-                Debug.Log("Lan oldu mu");
+                Debug.Log("DUVAR VAR");
             }
         }
     }
     private void CheckTwo(Vector3 cubeCenter, Vector3 cubeDirection)
     {
-        if (Physics.Raycast(cubeCenter, cubeDirection, out RaycastHit raycastHit, 2f))
+        if (Physics.Raycast(cubeCenter, cubeDirection, out RaycastHit raycastHit, 1f))
         {
-            if (raycastHit.collider.CompareTag("Wall"))
+            if (raycastHit.collider.tag == ("Wall"))
             {
-                Debug.DrawRay(cubeCenter, cubeDirection, Color.magenta, 5f);
+                Debug.DrawRay(cubeCenter, cubeDirection, Color.magenta, 10f);
                 isCubeFrontEmpty = false;
-                Debug.Log("aþama 3");
-            }            
+                Debug.Log("KÜPÜN ÖNÜNDE DUVAR VAR");
+
+            }
+
+            else if (raycastHit.collider.tag != ("Wall"))
+            {
+                Debug.DrawRay(cubeCenter, cubeDirection, Color.blue, 10f);
+                isCubeFrontEmpty = true;
+                isCube = false;
+                Debug.Log("KÜPÜN ÖNÜDE DUVAR YOK");
+            }
         }
 
     }
